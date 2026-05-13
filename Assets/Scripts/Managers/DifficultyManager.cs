@@ -5,13 +5,17 @@ using UnityEngine;
 public class DifficultyManager : MonoBehaviour
 {
     public PlayerPerformanceTracker player;
-    public EnemyController enemy;
 
     [Header("Settings")]
     public float checkInterval = 10f;
     private float timer;
 
     private float difficultyMultiplier = 1f;
+
+    public float GetMultiplier()
+    {
+        return difficultyMultiplier;
+    }
 
     public enum DifficultyMode
     {
@@ -20,14 +24,6 @@ public class DifficultyManager : MonoBehaviour
     }
 
     public DifficultyMode mode;
-
-    void Start()
-    {
-        if (mode == DifficultyMode.Static)
-        {
-            ApplyStaticDifficulty(1f, 1f);
-        }
-    }
 
     void Update()
     {
@@ -41,12 +37,6 @@ public class DifficultyManager : MonoBehaviour
             EvaluatePlayer();
             timer = 0f;
         }
-    }
-
-    void ApplyStaticDifficulty(float healthMultiplier, float damageMultiplier)
-    {
-        enemy.health = enemy.baseHealth * healthMultiplier;
-        enemy.damage = enemy.baseDamage * damageMultiplier;
     }
 
     void EvaluatePlayer()
@@ -68,18 +58,24 @@ public class DifficultyManager : MonoBehaviour
     void DecreaseDifficulty()
     {
         difficultyMultiplier = Mathf.Max(0.5f, difficultyMultiplier - 0.1f);
-        ApplyAdaptiveDifficulty();
+        ApplyToAllEnemies();
     }
 
     void IncreaseDifficulty()
     {
         difficultyMultiplier = Mathf.Min(2f, difficultyMultiplier + 0.1f);
-        ApplyAdaptiveDifficulty();
+        ApplyToAllEnemies();
     }
 
-    void ApplyAdaptiveDifficulty()
+    void ApplyToAllEnemies()
     {
-        enemy.health = enemy.baseHealth * difficultyMultiplier;
-        enemy.damage = enemy.baseDamage * difficultyMultiplier;
+        EnemyController[] enemies = 
+            FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
+        
+        foreach (EnemyController enemy in enemies)
+        {
+            enemy.health = enemy.baseHealth * difficultyMultiplier;
+            enemy.damage = enemy.baseDamage * difficultyMultiplier;
+        }
     }
 }
