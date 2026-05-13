@@ -76,6 +76,9 @@ public class DifficultyManager : MonoBehaviour
         {
             enemy.health = enemy.baseHealth * difficultyMultiplier;
             enemy.damage = enemy.baseDamage * difficultyMultiplier;
+
+            EnemyAI ai = enemy.GetComponent<EnemyAI>();
+            if (ai != null) ai.speed = ai.baseSpeed * difficultyMultiplier;
         }
     }
 }
