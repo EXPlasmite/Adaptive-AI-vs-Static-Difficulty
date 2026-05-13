@@ -32,6 +32,12 @@ public class DataLogger : MonoBehaviour
         sessionTimer = 0f;
     }
 
+    public void EndSession()
+    {
+        LogSession();
+        SaveLog();
+    }
+
     public void SaveLog()
     {
         string path = Application.persistentDataPath + "/session_log.csv";
