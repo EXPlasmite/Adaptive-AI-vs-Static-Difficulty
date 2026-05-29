@@ -25,6 +25,13 @@ public class DifficultyManager : MonoBehaviour
 
     public DifficultyMode mode;
 
+    void Start()
+    {
+        string savedMode = PlayerPrefs.GetString("GameMode", "Static");
+        mode = savedMode == "Adaptive" ? 
+            DifficultyMode.Adaptive : DifficultyMode.Static;
+    }
+
     void Update()
     {
         if (mode == DifficultyMode.Static)

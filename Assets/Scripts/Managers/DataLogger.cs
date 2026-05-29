@@ -28,6 +28,7 @@ public class DataLogger : MonoBehaviour
                       $"{player.damageTaken},{sessionTimer:F1}," +
                       $"{difficultyManager.GetMultiplier()}";
         log.Add(entry);
+        player.ResetStats();
         sessionNumber++;
         sessionTimer = 0f;
     }
