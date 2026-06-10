@@ -3,17 +3,22 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     public float attackDamage = 25f;
-    public float attackRange = 1.5f;
+    public float spawnDistance = 1.5f;
+    public float spawnHeightOffset = 0.5f;
     public KeyCode attackKey = KeyCode.Space;
     public float attackCooldown = 0.8f;
+    public GameObject arrowPrefab;
+    public Transform arrowSpawnPoint;
     private float lastAttackTime;
     private Animator animator;
     private AudioSource audioSource;
+    private PlayerMovement playerMovement;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     void Update()
@@ -34,23 +39,22 @@ public class PlayerAttack : MonoBehaviour
         if (audioSource != null)
             audioSource.Play();
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(
-            transform.position, attackRange);
+        Vector2 direction = playerMovement.GetFacingDirection();
+        arrowSpawnPoint.localPosition = new Vector3(
+            direction.x * spawnDistance, 
+            direction.y * spawnDistance + spawnHeightOffset, 
+            0);
 
-        foreach (Collider2D hit in hits)
+        if (arrowPrefab != null && arrowSpawnPoint != null)
         {
-            if (hit.CompareTag("Enemy"))
-            {
-                EnemyController enemy = hit.GetComponent<EnemyController>();
-                if (enemy != null)
-                    enemy.TakeDamage(attackDamage);
-            }
-        }
-    }
+            GameObject arrow = Instantiate(arrowPrefab, 
+                arrowSpawnPoint.position, Quaternion.identity);
+            Arrow arrowScript = arrow.GetComponent<Arrow>();
+            if (arrowScript != null)
+                arrowScript.Launch(direction);
 
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            arrow.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
     }
 }
