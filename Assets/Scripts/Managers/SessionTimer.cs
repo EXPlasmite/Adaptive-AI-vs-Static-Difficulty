@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SessionTimer : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class SessionTimer : MonoBehaviour
     void Start()
     {
         timer = sessionDuration;
+        Time.timeScale = 1f;
         if (sessionCompletePanel != null)
             sessionCompletePanel.SetActive(false);
     }
@@ -23,8 +25,8 @@ public class SessionTimer : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Return))
             {
-                sessionCompletePanel.SetActive(false);
-                RestartTimer();
+                Time.timeScale = 1f;
+                SceneManager.LoadScene("MainScene");
             }
             return;
         }
@@ -38,17 +40,10 @@ public class SessionTimer : MonoBehaviour
             timerText.text = "Time: 0";
             dataLogger.LogSession();
             dataLogger.SaveLog();
+            Time.timeScale = 0f;
 
             if (sessionCompletePanel != null)
                 sessionCompletePanel.SetActive(true);
-
-            Debug.Log("Session Complete!");
         }
-    }
-
-    public void RestartTimer()
-    {
-        timer = sessionDuration;
-        sessionActive = true;
     }
 }

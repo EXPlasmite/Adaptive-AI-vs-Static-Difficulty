@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DataLogger : MonoBehaviour
 {
@@ -37,12 +38,12 @@ public class DataLogger : MonoBehaviour
     {
         LogSession();
         SaveLog();
+        SceneManager.LoadScene("MainMenu");
     }
 
     public void SaveLog()
     {
         string path = Application.persistentDataPath + "/session_log.csv";
         File.WriteAllLines(path, log);
-        Debug.Log("Data saved to: " + path);
     }
 }
