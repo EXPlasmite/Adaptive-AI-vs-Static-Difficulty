@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class DifficultyManager : MonoBehaviour
 {
+    public static DifficultyManager Instance;
+
     public PlayerPerformanceTracker player;
 
     [Header("Settings")]
@@ -24,6 +26,11 @@ public class DifficultyManager : MonoBehaviour
     }
 
     public DifficultyMode mode;
+
+    void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -81,7 +88,7 @@ public class DifficultyManager : MonoBehaviour
         
         foreach (EnemyController enemy in enemies)
         {
-            enemy.health = enemy.baseHealth * difficultyMultiplier;
+            // Don't reset current health, only update damage and speed
             enemy.damage = enemy.baseDamage * difficultyMultiplier;
 
             EnemyAI ai = enemy.GetComponent<EnemyAI>();

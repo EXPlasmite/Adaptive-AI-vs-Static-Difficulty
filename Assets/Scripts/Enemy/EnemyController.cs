@@ -26,8 +26,10 @@ public class EnemyController : MonoBehaviour
 
     public void ResetStats()
     {
-        health = baseHealth;
-        damage = baseDamage;
+        float multiplier = DifficultyManager.Instance != null ? 
+            DifficultyManager.Instance.GetMultiplier() : 1f;
+        health = baseHealth * multiplier;
+        damage = baseDamage * multiplier;
     }
 
     public void TakeDamage(float amount)
