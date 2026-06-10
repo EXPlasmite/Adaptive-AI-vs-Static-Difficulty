@@ -44,6 +44,9 @@ public class DataLogger : MonoBehaviour
     public void SaveLog()
     {
         string path = Application.persistentDataPath + "/session_log.csv";
-        File.WriteAllLines(path, log);
+        if (!File.Exists(path))
+            File.WriteAllLines(path, log);
+        else
+            File.AppendAllLines(path, log.GetRange(1, log.Count - 1));
     }
 }

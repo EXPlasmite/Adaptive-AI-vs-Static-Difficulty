@@ -7,7 +7,6 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 movement;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
-    private Vector2 facingDirection = Vector2.down;
 
     void Start()
     {
@@ -21,9 +20,6 @@ public class PlayerMovement : MonoBehaviour
     {
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
-
-        if (movement.magnitude > 0)
-            facingDirection = movement.normalized;
 
         if (movement.x > 0)
             spriteRenderer.flipX = false;
@@ -49,7 +45,6 @@ public class PlayerMovement : MonoBehaviour
 
     public Vector2 GetFacingDirection()
     {
-        // Prioritise most recent movement direction
         if (Mathf.Abs(movement.x) > Mathf.Abs(movement.y))
             return spriteRenderer.flipX ? Vector2.left : Vector2.right;
         else if (movement.y > 0)
@@ -58,11 +53,6 @@ public class PlayerMovement : MonoBehaviour
             return Vector2.down;
         else
             return spriteRenderer.flipX ? Vector2.left : Vector2.right;
-    }
-
-    public bool GetSpriteFlip()
-    {
-        return spriteRenderer.flipX;
     }
 
     void FixedUpdate()

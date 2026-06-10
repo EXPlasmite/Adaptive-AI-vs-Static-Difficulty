@@ -51,8 +51,10 @@ public class PlayerAttack : MonoBehaviour
                 arrowSpawnPoint.position, Quaternion.identity);
             Arrow arrowScript = arrow.GetComponent<Arrow>();
             if (arrowScript != null)
+            {
+                arrowScript.damage = attackDamage;
                 arrowScript.Launch(direction);
-
+            }
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             arrow.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }
