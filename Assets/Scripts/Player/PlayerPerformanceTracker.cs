@@ -22,8 +22,6 @@ public class PlayerPerformanceTracker : MonoBehaviour
         currentHealth -= damage;
         damageTaken += damage;
 
-        Debug.Log("Damage Taken: " + damageTaken + " | Health: " + currentHealth);
-
         if (currentHealth <= 0f)
         {
             RegisterDeath();
@@ -35,12 +33,10 @@ public class PlayerPerformanceTracker : MonoBehaviour
     {
         deaths++;
         transform.position = Vector3.zero;
-        Debug.Log("Deaths: " + deaths);
     }
 
     public void ResetStats()
     {
-        Debug.Log("Stats Reset");
         damageTaken = 0f;
         deaths = 0;
         currentHealth = maxHealth;

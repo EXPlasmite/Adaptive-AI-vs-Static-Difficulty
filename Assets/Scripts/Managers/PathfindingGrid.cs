@@ -21,12 +21,10 @@ public class PathfindingGrid : MonoBehaviour
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
         CreateGrid();
-        Debug.Log("Grid created: " + gridSizeX + "x" + gridSizeY);
     }
 
     void CreateGrid()
     {
-        int unwalkableCount = 0;
         grid = new Node[gridSizeX, gridSizeY];
         Vector3 worldBottomLeft = transform.position - 
             Vector3.right * gridWorldSize.x / 2 - 
@@ -42,12 +40,11 @@ public class PathfindingGrid : MonoBehaviour
                 
                 Vector3Int cellPos = wallTilemap.WorldToCell(worldPoint);
                 bool walkable = wallTilemap.GetTile(cellPos) == null;
-                if (!walkable) unwalkableCount++;
                 grid[x, y] = new Node(walkable, worldPoint, x, y);
             }
         }
-        Debug.Log("Unwalkable nodes: " + unwalkableCount);
     }
+
     public Node NodeFromWorldPoint(Vector3 worldPosition)
     {
         float percentX = Mathf.Clamp01(
@@ -75,23 +72,6 @@ public class PathfindingGrid : MonoBehaviour
             }
         }
         return neighbours;
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireCube(transform.position, 
-            new Vector3(gridWorldSize.x, gridWorldSize.y, 1));
-        
-        if (grid != null)
-        {
-            foreach (Node n in grid)
-            {
-                Gizmos.color = n.walkable ? Color.white : Color.red;
-                Vector3 pos = new Vector3(n.worldPosition.x, n.worldPosition.y, -1);
-                Gizmos.DrawCube(pos, Vector3.one * (nodeDiameter - 0.1f));
-            }
-        }
     }
 }
 
