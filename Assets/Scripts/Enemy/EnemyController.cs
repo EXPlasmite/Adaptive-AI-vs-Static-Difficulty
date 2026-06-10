@@ -12,9 +12,14 @@ public class EnemyController : MonoBehaviour
     public float health;
     public float damage;
 
+    private AudioSource audioSource;
+    private Animator animator;
+
     void Start()
     {
         ResetStats();
+        audioSource = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
     }
 
     public void ResetStats()
@@ -43,6 +48,8 @@ public class EnemyController : MonoBehaviour
             if (tracker != null)
             {
                 tracker.TakeDamage(damage);
+                if (audioSource != null) audioSource.Play();
+                if (animator != null) animator.Play("attack");
             }
         }
     }

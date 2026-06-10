@@ -21,25 +21,26 @@ public class PlayerMovement : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
-        // Flip sprite based on horizontal direction
         if (movement.x > 0)
             spriteRenderer.flipX = false;
         else if (movement.x < 0)
             spriteRenderer.flipX = true;
 
-        // Trigger animations
-        if (animator != null)
+        if (animator == null) return;
+
+        // Don't override attack animation
+        if (animator.GetCurrentAnimatorStateInfo(0).IsName("attack"))
+            return;
+
+        if (movement.magnitude > 0)
         {
-            if (movement.magnitude > 0)
-            {
-                animator.Play("walk");
-                animator.SetFloat("movementY", movement.y > 0 ? 1f : -1f);
-            }
-            else
-            {
-                animator.Play("idle");
-                animator.SetFloat("movementY", -1f);
-            }
+            animator.Play("walk");
+            animator.SetFloat("movementY", movement.y > 0 ? 1f : -1f);
+        }
+        else
+        {
+            animator.Play("idle");
+            animator.SetFloat("movementY", -1f);
         }
     }
 
