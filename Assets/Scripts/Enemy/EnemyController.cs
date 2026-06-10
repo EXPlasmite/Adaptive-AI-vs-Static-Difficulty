@@ -12,6 +12,8 @@ public class EnemyController : MonoBehaviour
     public float health;
     public float damage;
 
+    public float attackCooldown = 1f;
+    private float lastAttackTime;
     private AudioSource audioSource;
     private Animator animator;
 
@@ -40,16 +42,30 @@ public class EnemyController : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
+        DealDamage(collision);
+    }
+
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        DealDamage(collision);
+    }
+
+    void DealDamage(Collision2D collision)
+    {
         if (collision.gameObject.CompareTag("Player"))
         {
-            PlayerPerformanceTracker tracker =
-                collision.gameObject.GetComponent<PlayerPerformanceTracker>();
-
-            if (tracker != null)
+            if (Time.time >= lastAttackTime + attackCooldown)
             {
-                tracker.TakeDamage(damage);
-                if (audioSource != null) audioSource.Play();
-                if (animator != null) animator.Play("attack");
+                PlayerPerformanceTracker tracker =
+                    collision.gameObject.GetComponent<PlayerPerformanceTracker>();
+
+                if (tracker != null)
+                {
+                    tracker.TakeDamage(damage);
+                    if (audioSource != null) audioSource.Play();
+                    if (animator != null) animator.Play("attack");
+                    lastAttackTime = Time.time;
+                }
             }
         }
     }

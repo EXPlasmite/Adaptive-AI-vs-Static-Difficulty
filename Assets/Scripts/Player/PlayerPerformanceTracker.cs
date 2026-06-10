@@ -38,7 +38,5 @@ public class PlayerPerformanceTracker : MonoBehaviour
     public void ResetStats()
     {
         damageTaken = 0f;
-        deaths = 0;
-        currentHealth = maxHealth;
     }
 }
