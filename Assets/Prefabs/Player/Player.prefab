@@ -354,7 +354,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackDamage: 25
-  spawnDistance: 1.5
+  spawnDistance: 1
   spawnHeightOffset: 0.7
   attackKey: 32
   attackCooldown: 0.8
