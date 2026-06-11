@@ -6151,7 +6151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeInDuration: 1.5
-  fadeOutDuration: 10
+  fadeOutDuration: 3
 --- !u!1 &1570407057
 GameObject:
   m_ObjectHideFlags: 0
