@@ -11,6 +11,10 @@ public class PlayerPerformanceTracker : MonoBehaviour
     public int deaths;
     public int totalDeaths;
 
+    [Header("Respawn")]
+    public Transform[] respawnPoints;
+    public float safeSpawnRadius = 5f;
+
     void Start()
     {
         currentHealth = maxHealth;
@@ -32,7 +36,23 @@ public class PlayerPerformanceTracker : MonoBehaviour
     {
         deaths++;
         totalDeaths++;
-        transform.position = Vector3.zero;
+        transform.position = GetSafeSpawnPosition();
+    }
+
+    Vector3 GetSafeSpawnPosition()
+    {
+        if (respawnPoints == null || respawnPoints.Length == 0)
+            return Vector3.zero;
+
+        int enemyLayer = LayerMask.GetMask("Enemy");
+
+        foreach (Transform point in respawnPoints)
+        {
+            if (Physics2D.OverlapCircleAll(point.position, safeSpawnRadius, enemyLayer).Length == 0)
+                return point.position;
+        }
+
+        return respawnPoints[0].position;
     }
 
     public void ResetStats()
