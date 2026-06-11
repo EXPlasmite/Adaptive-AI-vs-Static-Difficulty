@@ -15,8 +15,16 @@ public class Pathfinding : MonoBehaviour
         Node startNode = PathfindingGrid.Instance.NodeFromWorldPoint(startPos);
         Node targetNode = PathfindingGrid.Instance.NodeFromWorldPoint(targetPos);
 
+        if (!targetNode.walkable)
+            targetNode = GetNearestWalkableNode(targetNode);
+
+        if (!startNode.walkable)
+            startNode = GetNearestWalkableNode(startNode);
+
+        if (targetNode == null || startNode == null)
+            return null;
+
         List<Node> openSet = new List<Node>();
-        
         HashSet<Node> closedSet = new HashSet<Node>();
         openSet.Add(startNode);
 
@@ -56,6 +64,20 @@ public class Pathfinding : MonoBehaviour
                     if (!openSet.Contains(neighbour))
                         openSet.Add(neighbour);
                 }
+            }
+        }
+        return null;
+    }
+
+    Node GetNearestWalkableNode(Node node)
+    {
+        for (int radius = 1; radius < 5; radius++)
+        {
+            List<Node> neighbours = PathfindingGrid.Instance.GetNeighboursInRadius(node, radius);
+            foreach (Node neighbour in neighbours)
+            {
+                if (neighbour.walkable)
+                    return neighbour;
             }
         }
         return null;

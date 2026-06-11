@@ -25,7 +25,7 @@ public class DataLogger : MonoBehaviour
     public void LogSession()
     {
         string mode = difficultyManager.mode.ToString();
-        string entry = $"{sessionNumber},{mode},{player.deaths}," +
+        string entry = $"{sessionNumber},{mode},{player.totalDeaths}," +
                       $"{player.damageTaken},{sessionTimer:F1}," +
                       $"{difficultyManager.GetMultiplier()}";
         log.Add(entry);

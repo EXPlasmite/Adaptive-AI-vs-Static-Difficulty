@@ -12,6 +12,7 @@ public class EnemyAI : MonoBehaviour
     private int targetIndex;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private Vector3 lastPlayerPos;
 
     void Start()
     {
@@ -29,21 +30,45 @@ public class EnemyAI : MonoBehaviour
         {
             if (player != null && Pathfinding.Instance != null)
             {
-                List<Node> newPath = Pathfinding.Instance.FindPath(
-                    transform.position, player.position);
-                if (newPath != null && newPath.Count > 0)
+                if (Vector3.Distance(player.position, lastPlayerPos) > 1f ||
+                    path == null)
                 {
-                    path = newPath;
-                    targetIndex = 0;
+                    List<Node> newPath = Pathfinding.Instance.FindPath(
+                        transform.position, player.position);
+                    if (newPath != null && newPath.Count > 0)
+                    {
+                        path = newPath;
+                        targetIndex = 0;
+                        lastPlayerPos = player.position;
+                    }
                 }
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
     void FixedUpdate()
     {
         if (player == null) return;
+
+        if (Vector2.Distance(transform.position, player.position) < 2f)
+        {
+            Vector2 directDir = (player.position - transform.position).normalized;
+            rb.MovePosition(rb.position + directDir * speed * Time.fixedDeltaTime);
+
+            if (spriteRenderer != null)
+            {
+                if (directDir.x > 0) spriteRenderer.flipX = false;
+                else if (directDir.x < 0) spriteRenderer.flipX = true;
+            }
+
+            if (animator != null && !animator.GetCurrentAnimatorStateInfo(0).IsName("attack"))
+            {
+                animator.Play("walk");
+                animator.SetFloat("movementY", directDir.y > 0 ? 1f : -1f);
+            }
+            return;
+        }
 
         if (path == null || path.Count == 0 || targetIndex >= path.Count)
         {

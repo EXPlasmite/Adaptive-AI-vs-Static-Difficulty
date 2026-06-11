@@ -9,6 +9,7 @@ public class PlayerPerformanceTracker : MonoBehaviour
     [Header("Performance Metrics")]
     public float damageTaken;
     public int deaths;
+    public int totalDeaths;
 
     void Start()
     {
@@ -30,11 +31,13 @@ public class PlayerPerformanceTracker : MonoBehaviour
     public void RegisterDeath()
     {
         deaths++;
+        totalDeaths++;
         transform.position = Vector3.zero;
     }
 
     public void ResetStats()
     {
         damageTaken = 0f;
+        deaths = 0;
     }
 }

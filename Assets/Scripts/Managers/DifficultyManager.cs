@@ -9,8 +9,9 @@ public class DifficultyManager : MonoBehaviour
     public PlayerPerformanceTracker player;
 
     [Header("Settings")]
-    public float checkInterval = 10f;
+    public float checkInterval = 5f;
     private float timer;
+    private bool gameStarted = false;
 
     private float difficultyMultiplier = 1f;
 
@@ -39,9 +40,14 @@ public class DifficultyManager : MonoBehaviour
             DifficultyMode.Adaptive : DifficultyMode.Static;
     }
 
+    public void OnEnemySpawned()
+    {
+        gameStarted = true;
+    }
+
     void Update()
     {
-        if (mode == DifficultyMode.Static)
+        if (mode == DifficultyMode.Static || !gameStarted)
             return;
 
         timer += Time.deltaTime;
@@ -57,27 +63,27 @@ public class DifficultyManager : MonoBehaviour
     {
         float score = player.damageTaken + (player.deaths * 50f);
 
-        if (score > 100f)
-        {
-            DecreaseDifficulty();
-        }
-        else if (score < 40f)
-        {
-            IncreaseDifficulty();
-        }
+        if (score > 150f)
+            DecreaseDifficulty(0.1f);
+        else if (score > 80f)
+            DecreaseDifficulty(0.05f);
+        else if (score < 30f)
+            IncreaseDifficulty(0.1f);
+        else if (score < 60f)
+            IncreaseDifficulty(0.05f);
 
         player.ResetStats();
     }
 
-    void DecreaseDifficulty()
+    void DecreaseDifficulty(float amount)
     {
-        difficultyMultiplier = Mathf.Max(0.5f, difficultyMultiplier - 0.1f);
+        difficultyMultiplier = Mathf.Max(0.5f, difficultyMultiplier - amount);
         ApplyToAllEnemies();
     }
 
-    void IncreaseDifficulty()
+    void IncreaseDifficulty(float amount)
     {
-        difficultyMultiplier = Mathf.Min(2f, difficultyMultiplier + 0.1f);
+        difficultyMultiplier = Mathf.Min(2f, difficultyMultiplier + amount);
         ApplyToAllEnemies();
     }
 
@@ -88,7 +94,6 @@ public class DifficultyManager : MonoBehaviour
         
         foreach (EnemyController enemy in enemies)
         {
-            // Don't reset current health, only update damage and speed
             enemy.damage = enemy.baseDamage * difficultyMultiplier;
 
             EnemyAI ai = enemy.GetComponent<EnemyAI>();

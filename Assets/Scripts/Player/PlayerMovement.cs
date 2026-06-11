@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 movement;
     private Animator animator;
     private SpriteRenderer spriteRenderer;
+    private Vector2 lastDirection = Vector2.down;
 
     void Start()
     {
@@ -21,38 +22,49 @@ public class PlayerMovement : MonoBehaviour
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
+        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
+            lastDirection = Vector2.up;
+        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
+            lastDirection = Vector2.down;
+        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
+            if (!Input.GetKey(KeyCode.A) && !Input.GetKey(KeyCode.LeftArrow))
+                lastDirection = Vector2.right;
+        }
+        else if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
+            if (!Input.GetKey(KeyCode.D) && !Input.GetKey(KeyCode.RightArrow))
+                lastDirection = Vector2.left;
+        }
+
         if (movement.x > 0)
             spriteRenderer.flipX = false;
         else if (movement.x < 0)
             spriteRenderer.flipX = true;
+        else if (lastDirection == Vector2.right)
+            spriteRenderer.flipX = false;
+        else if (lastDirection == Vector2.left)
+            spriteRenderer.flipX = true;
 
         if (animator == null) return;
 
-        if (animator.GetCurrentAnimatorStateInfo(0).IsName("attack"))
-            return;
-
         if (movement.magnitude > 0)
         {
-            animator.Play("walk");
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("attack"))
+                animator.Play("walk");
             animator.SetFloat("movementY", movement.y > 0 ? 1f : -1f);
         }
         else
         {
-            animator.Play("idle");
-            animator.SetFloat("movementY", -1f);
+            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("attack"))
+                animator.Play("idle");
+            animator.SetFloat("movementY", lastDirection == Vector2.up ? 1f : -1f);
         }
     }
 
     public Vector2 GetFacingDirection()
     {
-        if (Mathf.Abs(movement.x) > Mathf.Abs(movement.y))
-            return spriteRenderer.flipX ? Vector2.left : Vector2.right;
-        else if (movement.y > 0)
-            return Vector2.up;
-        else if (movement.y < 0)
-            return Vector2.down;
-        else
-            return spriteRenderer.flipX ? Vector2.left : Vector2.right;
+        return lastDirection;
     }
 
     void FixedUpdate()

@@ -73,6 +73,24 @@ public class PathfindingGrid : MonoBehaviour
         }
         return neighbours;
     }
+
+    public List<Node> GetNeighboursInRadius(Node node, int radius)
+    {
+        List<Node> neighbours = new List<Node>();
+        for (int x = -radius; x <= radius; x++)
+        {
+            for (int y = -radius; y <= radius; y++)
+            {
+                if (x == 0 && y == 0) continue;
+                int checkX = node.gridX + x;
+                int checkY = node.gridY + y;
+                if (checkX >= 0 && checkX < gridSizeX &&
+                    checkY >= 0 && checkY < gridSizeY)
+                    neighbours.Add(grid[checkX, checkY]);
+            }
+        }
+        return neighbours;
+    }
 }
 
 public class Node

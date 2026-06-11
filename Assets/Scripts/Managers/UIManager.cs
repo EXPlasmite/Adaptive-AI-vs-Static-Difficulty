@@ -18,7 +18,7 @@ public class UIManager : MonoBehaviour
     void Update()
     {
         healthText.text = "Health: " + player.currentHealth.ToString("F0");
-        deathText.text = "Deaths: " + player.deaths;
+        deathText.text = "Deaths: " + player.totalDeaths;
         modeText.text = "Mode: " + difficultyManager.mode.ToString();
         multiplierText.text = "Multiplier: " + 
             difficultyManager.GetMultiplier().ToString("F2");

@@ -25,5 +25,8 @@ public class EnemySpawner : MonoBehaviour
     {
         int index = Random.Range(0, spawnPoints.Length);
         Instantiate(enemyPrefab, spawnPoints[index].position, Quaternion.identity);
+
+        if (DifficultyManager.Instance != null)
+            DifficultyManager.Instance.OnEnemySpawned();
     }
 }
