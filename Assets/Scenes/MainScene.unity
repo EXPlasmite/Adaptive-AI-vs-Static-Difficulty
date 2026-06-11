@@ -4874,6 +4874,10 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6075975974933568964, guid: a92434f05fc24a2408687e0356655548, type: 3}
+      propertyPath: m_ExcludeLayers.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6075975974933568965, guid: a92434f05fc24a2408687e0356655548, type: 3}
       propertyPath: m_SortingOrder
       value: 1
