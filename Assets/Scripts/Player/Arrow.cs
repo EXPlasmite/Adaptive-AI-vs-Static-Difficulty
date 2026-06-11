@@ -7,10 +7,12 @@ public class Arrow : MonoBehaviour
     public float lifetime = 3f;
     private Vector2 direction;
     private AudioSource audioSource;
+    private Rigidbody2D rb;
 
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
+        rb = GetComponent<Rigidbody2D>();
         Destroy(gameObject, lifetime);
     }
 
@@ -19,9 +21,9 @@ public class Arrow : MonoBehaviour
         direction = dir.normalized;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        transform.Translate(direction * speed * Time.deltaTime, Space.World);
+        rb.MovePosition(rb.position + direction * speed * Time.fixedDeltaTime);
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -44,7 +46,9 @@ public class Arrow : MonoBehaviour
             {
                 audioSource.Play();
                 GetComponent<SpriteRenderer>().enabled = false;
-                GetComponent<Collider2D>().enabled = false;
+                // Disable all colliders
+                foreach (Collider2D col in GetComponents<Collider2D>())
+                    col.enabled = false;
                 Destroy(gameObject, audioSource.clip.length);
             }
             else

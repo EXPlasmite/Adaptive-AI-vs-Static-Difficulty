@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4895522257787920051}
   - component: {fileID: 108803363643158821}
   - component: {fileID: 4326911951528703904}
-  - component: {fileID: 4094484007316251545}
+  - component: {fileID: 9029529648415865250}
   m_Layer: 0
   m_Name: HoodAttack
   m_TagString: Untagged
@@ -232,7 +232,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!61 &108803363643158821
 BoxCollider2D:
@@ -324,7 +324,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.6028943, y: 0.20281458}
   m_EdgeRadius: 0
---- !u!114 &4094484007316251545
+--- !u!114 &9029529648415865250
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

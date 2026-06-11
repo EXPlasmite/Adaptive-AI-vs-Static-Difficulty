@@ -14,6 +14,11 @@ public class EnemyHealthBar : MonoBehaviour
     void Update()
     {
         if (enemyController != null)
-            healthBar.value = enemyController.health / enemyController.baseHealth;
+        {
+            float maxHealth = enemyController.baseHealth * 
+                (DifficultyManager.Instance != null ? 
+                DifficultyManager.Instance.GetMultiplier() : 1f);
+            healthBar.value = enemyController.health / maxHealth;
+        }
     }
 }
