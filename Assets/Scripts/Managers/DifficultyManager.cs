@@ -61,16 +61,15 @@ public class DifficultyManager : MonoBehaviour
 
     void EvaluatePlayer()
     {
-        float score = player.damageTaken + (player.deaths * 50f);
-
-        if (score > 150f)
+        if (player.deaths > 0)
+            DecreaseDifficulty(0.2f);
+        else if (player.damageTaken > 80f)
             DecreaseDifficulty(0.1f);
-        else if (score > 80f)
-            DecreaseDifficulty(0.05f);
-        else if (score < 30f)
+        else if (player.damageTaken == 0f)
+            IncreaseDifficulty(0.2f);
+        else if (player.damageTaken < 20f)
             IncreaseDifficulty(0.1f);
-        else if (score < 60f)
-            IncreaseDifficulty(0.05f);
+        // 20-80 damage, no deaths = neutral
 
         player.ResetStats();
     }
