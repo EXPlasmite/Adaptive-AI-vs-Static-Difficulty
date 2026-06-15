@@ -8,6 +8,7 @@ public class PlayerPerformanceTracker : MonoBehaviour
 
     [Header("Performance Metrics")]
     public float damageTaken;
+    public float totalDamageTaken;
     public int deaths;
     public int totalDeaths;
 
@@ -24,6 +25,7 @@ public class PlayerPerformanceTracker : MonoBehaviour
     {
         currentHealth -= damage;
         damageTaken += damage;
+        totalDamageTaken += damage;
 
         if (currentHealth <= 0f)
         {
