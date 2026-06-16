@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Manages dynamic difficulty adjustment for the adaptive condition.
+// Evaluates player performance at fixed intervals and adjusts a difficulty
+// multiplier applied to enemy damage and movement speed.
 public class DifficultyManager : MonoBehaviour
 {
     public static DifficultyManager Instance;
@@ -9,10 +12,13 @@ public class DifficultyManager : MonoBehaviour
     public PlayerPerformanceTracker player;
 
     [Header("Settings")]
+    // Default 5f, overridden to 10 seconds in the Inspector for this study
     public float checkInterval = 5f;
     private float timer;
+    // Prevents evaluation before the first enemy spawns
     private bool gameStarted = false;
 
+    // Clamped between 0.5 (minimum) and 2.0 (maximum), starts at 1.0
     private float difficultyMultiplier = 1f;
 
     public float GetMultiplier()
@@ -22,8 +28,8 @@ public class DifficultyManager : MonoBehaviour
 
     public enum DifficultyMode
     {
-        Static,
-        Adaptive
+        Static,   // Multiplier stays fixed at 1.0
+        Adaptive  // Multiplier adjusted every checkInterval seconds
     }
 
     public DifficultyMode mode;
@@ -35,11 +41,13 @@ public class DifficultyManager : MonoBehaviour
 
     void Start()
     {
+        // Read mode set from main menu via PlayerPrefs, defaults to Static
         string savedMode = PlayerPrefs.GetString("GameMode", "Static");
-        mode = savedMode == "Adaptive" ? 
+        mode = savedMode == "Adaptive" ?
             DifficultyMode.Adaptive : DifficultyMode.Static;
     }
 
+    // Called by enemy spawner when first enemy spawns
     public void OnEnemySpawned()
     {
         gameStarted = true;
@@ -59,17 +67,19 @@ public class DifficultyManager : MonoBehaviour
         }
     }
 
+    // Priority-ordered evaluation - only first matching condition applies.
+    // Stats reset after each interval so each window is assessed independently.
     void EvaluatePlayer()
     {
         if (player.deaths > 0)
-            DecreaseDifficulty(0.2f);
+            DecreaseDifficulty(0.2f);       // Any death — strongest signal
         else if (player.damageTaken > 80f)
-            DecreaseDifficulty(0.1f);
+            DecreaseDifficulty(0.1f);       // High damage, no death
         else if (player.damageTaken == 0f)
-            IncreaseDifficulty(0.2f);
+            IncreaseDifficulty(0.2f);       // No damage — player performing strongly
         else if (player.damageTaken < 20f)
-            IncreaseDifficulty(0.1f);
-        // 20-80 damage, no deaths = neutral
+            IncreaseDifficulty(0.1f);       // Low damage — player performing well
+        // 20-80 damage, no deaths = neutral, no change
 
         player.ResetStats();
     }
@@ -86,11 +96,13 @@ public class DifficultyManager : MonoBehaviour
         ApplyToAllEnemies();
     }
 
+    // Applies multiplier to damage and speed of all active enemies immediately.
+    // Enemy health is only scaled at spawn, not retroactively updated.
     void ApplyToAllEnemies()
     {
-        EnemyController[] enemies = 
+        EnemyController[] enemies =
             FindObjectsByType<EnemyController>(FindObjectsSortMode.None);
-        
+
         foreach (EnemyController enemy in enemies)
         {
             enemy.damage = enemy.baseDamage * difficultyMultiplier;

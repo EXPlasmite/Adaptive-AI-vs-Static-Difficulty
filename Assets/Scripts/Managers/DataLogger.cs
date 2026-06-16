@@ -3,6 +3,9 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+// Logs gameplay data to a CSV file at the end of each session.
+// Records one row per condition (Static or Adaptive) per participant.
+// CSV is saved to Application.persistentDataPath/session_log.csv
 public class DataLogger : MonoBehaviour
 {
     public PlayerPerformanceTracker player;
@@ -14,14 +17,21 @@ public class DataLogger : MonoBehaviour
 
     void Start()
     {
+        // Write CSV header row on scene load
         log.Add("Session,Mode,Deaths,DamageTaken,TimeSeconds,FinalMultiplier");
     }
 
     void Update()
     {
+        // Track session duration continuously
         sessionTimer += Time.deltaTime;
     }
 
+    // Called when the session ends (via UI button).
+    // Logs totalDeaths and totalDamageTaken - these persist across
+    // DifficultyManager's per-interval ResetStats() calls, ensuring
+    // the full session totals are recorded rather than only the
+    // final interval's values.
     public void LogSession()
     {
         string mode = difficultyManager.mode.ToString();
@@ -34,6 +44,7 @@ public class DataLogger : MonoBehaviour
         sessionTimer = 0f;
     }
 
+    // Logs the session, saves to CSV and returns to the main menu
     public void EndSession()
     {
         LogSession();
@@ -41,6 +52,8 @@ public class DataLogger : MonoBehaviour
         SceneManager.LoadScene("MainMenu");
     }
 
+    // Appends to existing CSV if one exists, otherwise creates a new file.
+    // Skips the header row when appending to avoid duplicates.
     public void SaveLog()
     {
         string path = Application.persistentDataPath + "/session_log.csv";

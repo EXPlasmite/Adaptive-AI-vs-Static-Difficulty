@@ -1,12 +1,15 @@
 using UnityEngine;
 
+// Handles player attack input and arrow projectile spawning.
+// Attack damage is fixed at 25f and is not scaled by the difficulty
+// multiplier - only enemy stats are affected by DifficultyManager.
 public class PlayerAttack : MonoBehaviour
 {
     public float attackDamage = 25f;
     public float spawnDistance = 1.5f;
     public float spawnHeightOffset = 0.5f;
     public KeyCode attackKey = KeyCode.Space;
-    public float attackCooldown = 0.8f;
+    public float attackCooldown = 0.8f; // Minimum time between attacks
     public GameObject arrowPrefab;
     public Transform arrowSpawnPoint;
     private float lastAttackTime;
@@ -23,6 +26,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        // Fire arrow on Space press, subject to attack cooldown
         if (Input.GetKeyDown(attackKey) && Time.time >= lastAttackTime + attackCooldown)
         {
             Attack();
@@ -39,15 +43,16 @@ public class PlayerAttack : MonoBehaviour
         if (audioSource != null)
             audioSource.Play();
 
+        // Spawn arrow in the direction the player is currently facing
         Vector2 direction = playerMovement.GetFacingDirection();
         arrowSpawnPoint.localPosition = new Vector3(
-            direction.x * spawnDistance, 
-            direction.y * spawnDistance + spawnHeightOffset, 
+            direction.x * spawnDistance,
+            direction.y * spawnDistance + spawnHeightOffset,
             0);
 
         if (arrowPrefab != null && arrowSpawnPoint != null)
         {
-            GameObject arrow = Instantiate(arrowPrefab, 
+            GameObject arrow = Instantiate(arrowPrefab,
                 arrowSpawnPoint.position, Quaternion.identity);
             Arrow arrowScript = arrow.GetComponent<Arrow>();
             if (arrowScript != null)
@@ -55,6 +60,7 @@ public class PlayerAttack : MonoBehaviour
                 arrowScript.damage = attackDamage;
                 arrowScript.Launch(direction);
             }
+            // Rotate arrow sprite to match travel direction
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             arrow.transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         }

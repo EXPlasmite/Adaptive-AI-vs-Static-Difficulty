@@ -2,12 +2,15 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Tilemaps;
 
+// Generates and stores the grid of nodes used by the A* pathfinding system.
+// Nodes are marked walkable or unwalkable based on the wall tilemap.
+// Built once at scene load and remains static throughout the session.
 public class PathfindingGrid : MonoBehaviour
 {
     public static PathfindingGrid Instance;
 
-    public Tilemap wallTilemap;
-    public Vector2 gridWorldSize;
+    public Tilemap wallTilemap;   // Reference to the wall tilemap in the scene
+    public Vector2 gridWorldSize; // Total world size the grid should cover
     public float nodeRadius = 0.5f;
 
     Node[,] grid;
@@ -23,21 +26,24 @@ public class PathfindingGrid : MonoBehaviour
         CreateGrid();
     }
 
+    // Creates a 2D array of nodes covering the grid world size.
+    // Each node is marked walkable if no wall tile occupies that position.
     void CreateGrid()
     {
         grid = new Node[gridSizeX, gridSizeY];
-        Vector3 worldBottomLeft = transform.position - 
-            Vector3.right * gridWorldSize.x / 2 - 
+        Vector3 worldBottomLeft = transform.position -
+            Vector3.right * gridWorldSize.x / 2 -
             Vector3.up * gridWorldSize.y / 2;
 
         for (int x = 0; x < gridSizeX; x++)
         {
             for (int y = 0; y < gridSizeY; y++)
             {
-                Vector3 worldPoint = worldBottomLeft + 
-                    Vector3.right * (x * nodeDiameter + nodeRadius) + 
+                Vector3 worldPoint = worldBottomLeft +
+                    Vector3.right * (x * nodeDiameter + nodeRadius) +
                     Vector3.up * (y * nodeDiameter + nodeRadius);
-                
+
+                // Node is walkable if no wall tile exists at this position
                 Vector3Int cellPos = wallTilemap.WorldToCell(worldPoint);
                 bool walkable = wallTilemap.GetTile(cellPos) == null;
                 grid[x, y] = new Node(walkable, worldPoint, x, y);
@@ -45,6 +51,7 @@ public class PathfindingGrid : MonoBehaviour
         }
     }
 
+    // Converts a world position to the nearest grid node
     public Node NodeFromWorldPoint(Vector3 worldPosition)
     {
         float percentX = Mathf.Clamp01(
@@ -56,6 +63,7 @@ public class PathfindingGrid : MonoBehaviour
         return grid[x, y];
     }
 
+    // Returns all 8 surrounding neighbours of a node (including diagonals)
     public List<Node> GetNeighbours(Node node)
     {
         List<Node> neighbours = new List<Node>();
@@ -63,10 +71,10 @@ public class PathfindingGrid : MonoBehaviour
         {
             for (int y = -1; y <= 1; y++)
             {
-                if (x == 0 && y == 0) continue;
+                if (x == 0 && y == 0) continue; // Skip the node itself
                 int checkX = node.gridX + x;
                 int checkY = node.gridY + y;
-                if (checkX >= 0 && checkX < gridSizeX && 
+                if (checkX >= 0 && checkX < gridSizeX &&
                     checkY >= 0 && checkY < gridSizeY)
                     neighbours.Add(grid[checkX, checkY]);
             }
@@ -74,6 +82,8 @@ public class PathfindingGrid : MonoBehaviour
         return neighbours;
     }
 
+    // Returns all neighbours within a given radius - used by Pathfinding
+    // to find the nearest walkable node when start or target is unwalkable
     public List<Node> GetNeighboursInRadius(Node node, int radius)
     {
         List<Node> neighbours = new List<Node>();
@@ -93,13 +103,15 @@ public class PathfindingGrid : MonoBehaviour
     }
 }
 
+// Represents a single node in the pathfinding grid.
+// fCost = gCost (distance from start) + hCost (estimated distance to target)
 public class Node
 {
     public bool walkable;
     public Vector3 worldPosition;
     public int gridX, gridY;
     public int gCost, hCost;
-    public Node parent;
+    public Node parent; // Used to retrace the path once target is reached
 
     public int fCost { get { return gCost + hCost; } }
 

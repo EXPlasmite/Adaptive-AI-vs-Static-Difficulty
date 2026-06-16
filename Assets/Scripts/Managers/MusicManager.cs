@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+// Handles background music playback with fade in and fade out transitions.
+// Loops the track manually to allow smooth fading between repetitions.
 public class MusicManager : MonoBehaviour
 {
     public float fadeInDuration = 1.5f;
@@ -10,13 +12,14 @@ public class MusicManager : MonoBehaviour
     void Start()
     {
         audioSource = GetComponent<AudioSource>();
-        audioSource.loop = false;
+        audioSource.loop = false; // Manual looping handled by TrackLoop()
         audioSource.volume = 0f;
         audioSource.Play();
         StartCoroutine(FadeIn());
         StartCoroutine(TrackLoop());
     }
 
+    // Gradually increases volume from 0 to 1 over fadeInDuration
     IEnumerator FadeIn()
     {
         float timer = 0f;
@@ -29,8 +32,10 @@ public class MusicManager : MonoBehaviour
         audioSource.volume = 1f;
     }
 
+    // Waits until near the end of the track, fades out, then restarts
     IEnumerator TrackLoop()
     {
+        // Wait until fadeOutDuration seconds before the track ends
         float waitTime = audioSource.clip.length - fadeOutDuration;
         float timer = 0f;
         while (timer < waitTime)
@@ -39,6 +44,7 @@ public class MusicManager : MonoBehaviour
             yield return null;
         }
 
+        // Fade out
         float fadeTimer = 0f;
         while (fadeTimer < fadeOutDuration)
         {
@@ -47,6 +53,7 @@ public class MusicManager : MonoBehaviour
             yield return null;
         }
 
+        // Restart track and fade back in
         audioSource.Stop();
         audioSource.Play();
         StartCoroutine(FadeIn());
