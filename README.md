@@ -85,8 +85,8 @@ The following assets were used under appropriate royalty-free or Unity Asset Sto
 | Asset Type                       | Source / License                                           | Usage                              | Modifications                  |
 |----------------------------------|------------------------------------------------------------|------------------------------------|--------------------------------|
 | Music                            | DARK FANTASY STUDIO - NOISE ALCHEMY, YouTube (Royalty Free)| Background music                   | Volume adjusted                |
-| Character sprites and animations | 2D Character - Cute & Chibi: Free Pack — Unity Asset Store | Enemy and player sprites and audio | Integrated into custom scripts |
-| Environment tiles                | Pixel Art Top Down - Basic — Unity Asset Store             | Background tile palette            | Arranged by author             |
+| Character sprites and animations | 2D Character - Cute & Chibi: Free Pack - Unity Asset Store | Enemy and player sprites and audio | Integrated into custom scripts |
+| Environment tiles                | Pixel Art Top Down - Basic - Unity Asset Store             | Background tile palette            | Arranged by author             |
 
 ## Attributions
 
@@ -104,7 +104,7 @@ The following assets were used under appropriate royalty-free or Unity Asset Sto
 - **Pixel Art Top Down - Basic**
   Unity Asset Store
   Used for the background tile palette.
-  Tiles selected and arranged by the author to create the game environment; no modifications made to the original tile assets.
+  Tiles selected and arranged by the author to create the game environment. No modifications made to the original tile assets.
 
 ---
 
