@@ -92,7 +92,7 @@ The following assets were used under appropriate royalty-free or Unity Asset Sto
 
 - **Relaxing RPG Exploration Music 30 Min**
   DARK FANTASY STUDIO - NOISE ALCHEMY
-  YouTube — Royalty Free, No Copyright
+  YouTube - Royalty Free, No Copyright
   https://www.youtube.com/watch?v=h4pTjcUI0r4
   Used as background music throughout gameplay. Volume adjusted in Unity's AudioSource component.
 
